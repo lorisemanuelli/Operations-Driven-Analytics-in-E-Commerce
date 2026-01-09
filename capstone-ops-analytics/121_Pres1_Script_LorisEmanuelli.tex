@@ -1,0 +1,84 @@
+\documentclass[12pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{setspace}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage[gen]{eurosym}
+\setstretch{1.15}
+\title{Operations-Driven Analytics in E-Commerce --- First Approach}
+\author{Loris Emanuelli}
+\date{}
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+\section*{Opening \texorpdfstring{[00{:}00--01{:}00]}{}}
+Good afternoon everyone, and thank you for joining. Think about the moments just before a major flash sale on a large e-commerce platform: operations teams refreshing dashboards, trying to judge whether their demand assumptions will hold. That is the scene that inspired this first update on ``Operations-Driven Analytics in E-Commerce.'' My aim is simply to share what I have synthesized from our capstone brief, the Mi\v{s}i\'{c} \& Perakis review, and the classical Newsvendor model that our instructors highlighted. This is an initial, structured walkthrough rather than a final story.
+
+\section*{Big Picture --- Why Operations-Driven Analytics Matters \texorpdfstring{[01{:}00--03{:}00]}{}}
+In this project, ``operations-driven analytics'' refers to the connection between quantitative insight and practical execution. In an e-commerce environment, forecasts, dashboards, and optimization tools are not stand-alone artefacts; they directly inform decisions about purchasing, replenishment, routing, and service promises. The capstone documentation emphasizes how tight margins and rapid cycles make reliance on intuition risky. The value proposition for us is to ground operational choices in measurable evidence, so that when questions arise about a stock decision or a service commitment, we can show the underlying analysis.
+
+\section*{Key Insights from Mi\v{s}i\'{c} and Perakis (2020) \texorpdfstring{[03{:}00--08{:}00]}{}}
+The review by Mi\v{s}i\'{c} \& Perakis synthesizes how data analytics is transforming operations, and several of their detailed observations are directly relevant to our capstone. On the supply chain side, the authors distinguish between descriptive, predictive, and prescriptive analytics, emphasizing that leading retailers connect all three layers. They describe systems that merge point-of-sale feeds, online clickstreams, and supplier performance dashboards to update inventory targets multiple times per day. A cited omnichannel pilot demonstrates that when online orders can be sourced from stores with temporary surpluses, fill rates improve and carrying costs fall by 15--25\%. This indicates clear value in building demand-variability and returns signals into our analysis.
+
+The paper also documents the rise of analytics-driven fulfillment control towers. Case studies in North America and Asia show that routing telemetry and capacity forecasts feed back into dynamic slotting tools; this allowed operators to tighten delivery windows while reducing late deliveries by double digits. The authors argue that the success of such initiatives lies in near-real-time data integration rather than in sophisticated algorithms alone, which is a useful guideline for us when thinking about architecture.
+
+When Mi\v{s}i\'{c} \& Perakis turn to revenue management, they highlight the importance of tightly linking demand estimation with pricing, assortment, and inventory decisions. They review examples of Bayesian learning and reinforcement learning approaches that adjust price ladders daily while respecting minimum inventory thresholds. They also discuss stochastic assortment models that allocate digital shelf space based on expected margin, substitution effects, and supply risk. Their assessment of targeted promotions underscores that uplift models must account for fulfillment capacity, avoiding campaigns that overload specific nodes in the network.
+
+The review concludes with organizational observations that resonate with our context. Analytical initiatives only take hold when there are shared metrics, governance routines, and accessible decision-support tools. Teams that operationalize analytics invest heavily in change management and transparency, ensuring that planners understand why recommendations shift. This is a reminder that our deliverables should emphasize interpretability and collaborative workflows, not just accuracy.
+
+\section*{The Newsvendor Model --- An Intuitive Walkthrough \texorpdfstring{[08{:}00--13{:}00]}{}}
+The Newsvendor model remains a useful baseline for single-period inventory decisions, so we will retain it as a reference while keeping the explanation concise. Before the selling period, we choose an order quantity. Demand realizations above that quantity incur an underage cost $C_u$ (lost margin and service impact), while realizations below it incur an overage cost $C_o$ (holding or liquidation loss). Demand is modeled by a cumulative distribution $F(q)$.
+
+The classical result is
+\[
+q^\ast = F^{-1}\!\left(\frac{C_u}{C_u + C_o}\right).
+\]
+The ratio $\frac{C_u}{C_u + C_o}$ is the critical fractile, or target service level. Higher underage cost pushes the ratio upward; higher overage cost has the opposite effect.
+
+For a quick illustration, suppose a limited-edition device sells for \euro{}120 and costs \euro{}70 to procure. Selling the unit yields $C_u = \euro{}50$. Liquidation at \euro{}40 implies $C_o = \euro{}30$. With demand distributed as Normal$(900, 180)$, the critical fractile is $0.625$. The associated quantile corresponds to a $z$-value of roughly $0.32$, producing
+\[
+q^\ast = 900 + 0.32 \times 180 \approx 958.
+\]
+Thus the baseline suggests ordering 958 units. Adjusting $C_u$ or $C_o$ with better data simply shifts this recommended level, reinforcing the value of accurate cost estimation.
+
+\section*{Relevance to Team 121's E-Commerce Focus \texorpdfstring{[13{:}00--16{:}00]}{}}
+Returning to our project scope, the themes from Mi\v{s}i\'{c} \& Perakis suggest specific avenues. Their discussion of adaptive inventory policies motivates us to evaluate how demand variability and return signals might be integrated into replenishment rules for seasonal peaks or short promotions. Their analysis of last-mile orchestration points toward studying how capacity forecasts could influence service promises in our e-commerce scenarios.
+
+The Newsvendor framework complements these insights by providing a simple mechanism for translating cost estimates into order quantities. Seasonal promotions, limited releases, and high-return categories can each be framed in terms of $C_u$ and $C_o$, while acknowledging that returns or perishability might shift those parameters. Using the review's empirical ranges for service-level gains and cost reductions can help us benchmark realistic expectations when we present options to stakeholders.
+
+Regarding data, the review and our capstone materials identify several relevant sources: JD.com flash-sale transactions for high-volatility demand patterns, Amazon's last-mile routing benchmarks for fulfillment constraints, and retailer returns datasets for calibrating $C_o$. These resources will allow us to test how sensitive recommended decisions are to the analytical assumptions we choose.
+
+\section*{Out of Scope Today \texorpdfstring{[16{:}00--17{:}00]}{}}
+A brief note on scope: this session does not cover feature-rich demand models, advanced machine learning approaches, or detailed customer segmentation. Those elements remain on the roadmap, but the instructors encouraged us to ensure that we can articulate the classical baseline first. Once we are comfortable with the fundamentals, we can discuss how more sophisticated techniques might provide refined inputs or automated parameter updates.
+
+\section*{Limitations and Risks \texorpdfstring{[17{:}00--18{:}30]}{}}
+It is important to acknowledge the limitations of this classical model. Real-world demand distributions can exhibit heavy tails or multiple modes, so an assumed distribution might not capture rare but significant spikes. Estimating $C_u$ is challenging because it may include intangible elements such as customer loyalty or brand reputation. Seasonality and structural changes can render earlier calibrations obsolete. Furthermore, the Newsvendor setup assumes a single period without the option of replenishment, whereas many real operations allow for partial adjustments.
+
+Organizational acceptance is another consideration. If operational teams do not trust the inputs or understand the rationale, they may disregard the recommendation. That underscores the need for transparent assumptions and sensitivity analyses.
+
+\section*{Closing \texorpdfstring{[19{:}30--20{:}00]}{}}
+To conclude, today’s session summarized the main insights from our source documents, revisited the Newsvendor model with a concrete example, and outlined how these elements connect to our e-commerce objectives. This is an initial framework that we can refine as we gather feedback and additional evidence. I welcome your questions and suggestions.
+
+\section*{Elevator Recap}
+In brief, we reviewed the motivation for operations-driven analytics in e-commerce, highlighted relevant findings from Mi\v{s}i\'{c} \& Perakis, walked through the Newsvendor model with a numeric example, and linked the insights to availability, returns, perishables, and promotions for Team~121.
+
+\appendix
+\section*{Appendix: Newsvendor Math Notes (Not for Live Delivery)}
+\begin{itemize}
+    \item Let demand $D$ have cumulative distribution $F$. The decision variable is the order quantity $q$.
+    \item Expected profit is $p\,\mathbb{E}[\min(D, q)] - c q + v\,\mathbb{E}[(q - D)^+]$, where $p$ is selling price, $c$ is purchase cost, and $v$ is salvage value.
+    \item The marginal condition states that we order one more unit if $\mathbb{P}(D \geq q) \geq \frac{C_o}{C_u + C_o}$.
+    \item The critical fractile $\beta^\ast = \frac{C_u}{C_u + C_o}$ yields $q^\ast = F^{-1}(\beta^\ast)$.
+    \item Extensions include service level constraints, price-dependent demand, and multi-product variants with capacity coupling.
+\end{itemize}
+
+\section*{References}
+\begin{itemize}
+    \item Velibor V. Mi\v{s}i\'{c} \& Georgia Perakis, ``Data Analytics in Operations Management: A Review,'' \emph{Manufacturing \& Service Operations Management}.
+    \item Wikipedia, ``Newsvendor model,'' \url{https://en.wikipedia.org/wiki/Newsvendor_model}.
+    \item ``Capstone Projects 121 \& 122 2025--2026 Main Doc and Resources.''
+\end{itemize}
+
+\end{document}
